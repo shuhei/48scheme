@@ -6,7 +6,8 @@
 - .
 - let ... in
 - case ... of
+- >>
 - >>=
 - instance ... ... where ... = ...
 - -fglasgow-exts is deprecated: Use individual extensions instead
-- >>
+- maybe: Try a Maybe value and returns a default value if it's Nothing or applies a function if it's not.
