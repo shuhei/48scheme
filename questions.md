@@ -8,3 +8,4 @@
 - case ... of
 - >>=
 - instance ... ... where ... = ...
+- -fglasgow-exts is deprecated: Use individual extensions instead
