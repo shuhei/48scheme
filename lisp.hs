@@ -1,5 +1,7 @@
 import System.Environment
 import System.IO
+import Numeric
+import Data.Char
 import Data.IORef
 import Control.Monad
 import Control.Monad.Error
@@ -20,7 +22,7 @@ data LispVal = Atom String
              | IOFunc ([LispVal] -> IOThrowsError LispVal)
              | Port Handle
 
--- Parsers
+-- Parser helpers
 
 symbol :: Parser Char
 symbol = oneOf "!#$%&|*+-/:<=>?@^_~"
@@ -37,6 +39,17 @@ escapedChar = do
     'r' -> '\r'
     't' -> '\t'
     _   -> c
+
+isBinDigit :: Char -> Bool
+isBinDigit c = case c of
+  '0' -> True
+  '1' -> True
+  _   -> False
+
+readBin :: (Integral a) => ReadS a
+readBin = readInt 2 isBinDigit digitToInt
+
+--- Parsers
 
 parseString :: Parser LispVal
 parseString = do
@@ -56,7 +69,34 @@ parseAtom = do
     _    -> Atom atom
 
 parseNumber :: Parser LispVal
-parseNumber = liftM (Number . read) $ many1 digit
+parseNumber = parseDigit <|> parseBin <|> parseOct <|> parseDec <|> parseHex
+
+parseDigit :: Parser LispVal
+parseDigit = liftM (Number . read) $ many1 digit
+
+parseBin :: Parser LispVal
+parseBin = do
+  try $ string "#b"
+  num <- many1 $ oneOf "01"
+  return . Number . fst $ readBin num !! 0
+
+parseOct :: Parser LispVal
+parseOct = do
+  try $ string "#o"
+  num <- many1 octDigit
+  return . Number . fst $ readOct num !! 0
+
+parseDec :: Parser LispVal
+parseDec = do
+  try $ string "#d"
+  num <- many1 digit
+  return . Number $ read num
+
+parseHex :: Parser LispVal
+parseHex = do
+  try $ string "#x"
+  num <- many1 hexDigit
+  return . Number . fst $ readHex num !! 0
 
 parseList :: Parser LispVal
 parseList = liftM List $ sepBy parseExpr spaces
@@ -74,9 +114,9 @@ parseQuoted = do
   return $ List [Atom "quote", x]
 
 parseExpr :: Parser LispVal
-parseExpr = parseAtom
+parseExpr = parseNumber
+  <|> parseAtom
   <|> parseString
-  <|> parseNumber
   <|> parseQuoted
   <|> do
     char '('

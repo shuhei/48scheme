@@ -5,7 +5,8 @@
 - let ... in
 - instance ... ... where ... = ...
 - -fglasgow-exts is deprecated: Use individual extensions instead
-- liftM
+- try
+- Why can't I just put parseNumber in front of parseAtom? [Chapter 2 Exercize 4](http://en.wikibooks.org/wiki/Write_Yourself_a_Scheme_in_48_Hours/Answers#Exercise_4)
 
 # Answers
 
@@ -83,6 +84,10 @@ x = do
 - `many` 0 or more
 - `many1` 1 or more
 - `skipMany1` 1 or more skipping its result
+
+## let
+
+`let` needs `{}` for multiple lines in a do-block.
 
 # Exercises
 
