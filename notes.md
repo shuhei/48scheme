@@ -60,6 +60,8 @@ Bind. Combines lines of a do-block. `bind` has completely different semantics de
 
 In general, use `>>` if the actions don't return a value, `>>=` if you'll be immediately passing that value into the next action, and do-notation otherwise.
 
+Lines of a do-block doesn't pass value into the next action.
+
 ## LiftM
 
 Operates on the value inside the monad, giving us back a monad of the operated value.
@@ -84,14 +86,91 @@ x = do
 
 # Exercises
 
-## Parsing
+## Chapter 1
 
 ### 1
 
 ```hs
+main :: IO ()
+main = do
+  args <- getArgs
+  putStrLn $ "Hello, " ++ args !! 0 ++ " and " ++ args !! 1
+```
+
+### 2
+
+```hs
+main :: IO ()
+main = do
+  args <- getArgs
+  putStrLn . show $ (read $ args !! 0) + (read $ args !! 1)
+```
+
+### 3
+
+```hs
+main :: IO ()
+main = do
+  putStrLn "Your name?"
+  name <- getLine
+  putStrLn $ "Hello, " ++ name ++ "!"
+```
+
+## Chapter 2
+
+### 1-1
+
+```hs
 parseNumber :: Parser LispVal
---parseNumber = liftM (Number . read) $ many1 digit
 parseNumber = do
   num <- many1 digit
   return $ Number $ read num
+```
+
+### 1-2
+
+```hs
+parseNumber :: Parser LispVal
+parseNumber = many1 digit >>= \num -> return . Number . read num
+```
+
+is equivalent to...
+
+```hs
+parseNumber :: Parser LispVal
+parseNumber = many1 digit >>= return . Number . read
+```
+
+### 2
+
+```hs
+parseString :: Parser LispVal
+parseString = do
+  char '"'
+  x <- many $ (char '\\' >> char '\"') <|> noneOf "\""
+  char '"'
+  return $ String x
+```
+
+Try `"The word \"recursion\" has many meanings."`.
+
+### 3
+
+```hs
+escapedChar :: Parser Char
+escapedChar = do
+  char '\\'
+  c <- oneOf "\"\\nrt"
+  return $ case c of
+    'n' -> '\n'
+    'r' -> '\r'
+    't' -> '\t'
+    _   -> c
+
+parseString :: Parser LispVal
+parseString = do
+  char '"'
+  x <- many $ escapedChar <|> noneOf "\""
+  char '"'
+  return $ String x
 ```
