@@ -1,1 +1,1 @@
-ghc -package parsec -fglasgow-exts -o simple_parser simple_parser.hs
+ghc -package parsec -fglasgow-exts -o lisp lisp.hs
