@@ -5,6 +5,7 @@
 - let ... in
 - instance ... ... where ... = ...
 - -fglasgow-exts is deprecated: Use individual extensions instead
+- liftM
 
 # Answers
 
@@ -58,3 +59,39 @@ readExpr input = case parse symbol "lisp" input of
 Bind. Combines lines of a do-block. `bind` has completely different semantics depending on the Monad.
 
 In general, use `>>` if the actions don't return a value, `>>=` if you'll be immediately passing that value into the next action, and do-notation otherwise.
+
+## LiftM
+
+Operates on the value inside the monad, giving us back a monad of the operated value.
+
+```hs
+x = liftM func mnd
+```
+
+is equivalent to...
+
+```hs
+x = do
+  val <- mnd
+  return $ func val
+```
+
+## Parsec
+
+- `many` 0 or more
+- `many1` 1 or more
+- `skipMany1` 1 or more skipping its result
+
+# Exercises
+
+## Parsing
+
+### 1
+
+```hs
+parseNumber :: Parser LispVal
+--parseNumber = liftM (Number . read) $ many1 digit
+parseNumber = do
+  num <- many1 digit
+  return $ Number $ read num
+```
