@@ -1,12 +1,8 @@
 # Questions
 
 - Monad
-- data
 - let
 - let ... in
-- case ... of
-- >>
-- >>=
 - instance ... ... where ... = ...
 - -fglasgow-exts is deprecated: Use individual extensions instead
 
@@ -47,3 +43,18 @@ http://learnyouahaskell.com/making-our-own-types-and-typeclasses
 
 Looks similar to Scala's case class.
 
+## case ... of
+
+Pattern matching.
+
+```hs
+readExpr input = case parse symbol "lisp" input of
+  Left err -> "No match: " ++ show err
+  Right val -> "Found value."
+```
+
+## >>, >>=
+
+Bind. Combines lines of a do-block. `bind` has completely different semantics depending on the Monad.
+
+In general, use `>>` if the actions don't return a value, `>>=` if you'll be immediately passing that value into the next action, and do-notation otherwise.
