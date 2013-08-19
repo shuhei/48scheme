@@ -7,6 +7,7 @@
 - -fglasgow-exts is deprecated: Use individual extensions instead
 - try
 - Why can't I just put parseNumber in front of parseAtom? [Chapter 2 Exercize 4](http://en.wikibooks.org/wiki/Write_Yourself_a_Scheme_in_48_Hours/Answers#Exercise_4)
+- Remove unnecessary `try`?
 
 # Answers
 

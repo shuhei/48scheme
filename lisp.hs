@@ -12,6 +12,7 @@ data LispVal = Atom String
              | List [LispVal]
              | DottedList [LispVal] LispVal
              | Number Integer
+             | Char Char
              | String String
              | Bool Bool
              | PrimitiveFunc ([LispVal] -> ThrowsError LispVal)
@@ -58,6 +59,21 @@ parseString = do
   char '"'
   return $ String x
 
+parseSingleChar :: Parser String
+parseSingleChar = do
+  c <- anyChar
+  notFollowedBy (letter <|> digit <|> symbol)
+  return [c]
+
+parseChar :: Parser LispVal
+parseChar = do
+  try $ string "#\\"
+  c <- try parseSingleChar <|> try (string "newline") <|> try (string "space")
+  return $ Char $ case c of
+    "newline" -> '\n'
+    "space"   -> ' '
+    _         -> c !! 0
+
 parseAtom :: Parser LispVal
 parseAtom = do
   first <- letter <|> symbol
@@ -68,7 +84,7 @@ parseAtom = do
 
 parseBool :: Parser LispVal
 parseBool = do
-  char '#'
+  try $ char '#'
   c <- oneOf "tf"
   return $ case c of
     't' -> Bool True
@@ -121,8 +137,9 @@ parseQuoted = do
 
 parseExpr :: Parser LispVal
 parseExpr = parseAtom
-  <|> parseNumber
-  <|> parseBool
+  <|> try parseNumber
+  <|> try parseBool
+  <|> try parseChar
   <|> parseString
   <|> parseQuoted
   <|> do
@@ -135,6 +152,7 @@ parseExpr = parseAtom
 
 showVal :: LispVal -> String
 showVal (String contents) = "\"" ++ contents ++ "\""
+showVal (Char content) = '\'' : content : "\'"
 showVal (Atom name) = name
 showVal (Number contents) = show contents
 showVal (Bool True) = "#t"
@@ -160,6 +178,7 @@ instance Show LispVal where show = showVal
 
 eval :: Env -> LispVal -> IOThrowsError LispVal
 eval env val@(String _) = return val
+eval env val@(Char _) = return val
 eval env val@(Number _) = return val
 eval env val@(Bool _) = return val
 eval env (Atom id) = getVar env id
