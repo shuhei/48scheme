@@ -12,6 +12,7 @@ data LispVal = Atom String
              | List [LispVal]
              | DottedList [LispVal] LispVal
              | Number Integer
+             | Float Double
              | Char Char
              | String String
              | Bool Bool
@@ -90,6 +91,14 @@ parseBool = do
     't' -> Bool True
     'f' -> Bool False
 
+parseFloat :: Parser LispVal
+parseFloat = do
+  before <- many1 digit
+  char '.'
+  after <- many1 digit
+  let original = before ++ "." ++ after
+  return $ Float $ fst $ head $ readFloat original
+
 parseNumber :: Parser LispVal
 parseNumber = parseDigit <|> parseBin <|> parseOct <|> parseDec <|> parseHex
 
@@ -137,6 +146,7 @@ parseQuoted = do
 
 parseExpr :: Parser LispVal
 parseExpr = parseAtom
+  <|> try parseFloat
   <|> try parseNumber
   <|> try parseBool
   <|> try parseChar
@@ -155,6 +165,7 @@ showVal (String contents) = "\"" ++ contents ++ "\""
 showVal (Char content) = '\'' : content : "\'"
 showVal (Atom name) = name
 showVal (Number contents) = show contents
+showVal (Float contents) = show contents
 showVal (Bool True) = "#t"
 showVal (Bool False) = "#f"
 showVal (List contents) = "(" ++ unwordsList contents ++ ")"
@@ -180,6 +191,7 @@ eval :: Env -> LispVal -> IOThrowsError LispVal
 eval env val@(String _) = return val
 eval env val@(Char _) = return val
 eval env val@(Number _) = return val
+eval env val@(Float _) = return val
 eval env val@(Bool _) = return val
 eval env (Atom id) = getVar env id
 eval env (List [Atom "quote", val]) = return val
