@@ -270,6 +270,8 @@ primitives = [
   ("car", car),
   ("cdr", cdr),
   ("cons", cons),
+  ("symbol->string", symbolToString),
+  ("string->symbol", stringToSymbol),
   ("boolean?", testType testBool),
   ("float?", testType testFloat),
   ("number?", testType testNumber),
@@ -316,7 +318,7 @@ unpackBool :: LispVal -> ThrowsError Bool
 unpackBool (Bool b) = return b
 unpackBool notBool = throwError $ TypeMismatch "boolean" notBool
 
----- List Primitives
+---- List functions
 
 car :: [LispVal] -> ThrowsError LispVal
 car [List (x : xs)] = return x
@@ -337,6 +339,18 @@ cons [x, List xs] = return $ List $ x : xs
 cons [x, DottedList xs xlast] = return $ DottedList (x : xs) xlast
 cons [x1, x2] = return $ DottedList [x1] x2
 cons badArgList = throwError $ NumArgs 2 badArgList
+
+---- Symbol functions
+
+symbolToString :: [LispVal] -> ThrowsError LispVal
+symbolToString [Atom x] = return $ String x
+symbolToString [badArg] = throwError $ TypeMismatch "symbol" badArg
+symbolToString badArgList = throwError $ NumArgs 1 badArgList
+
+stringToSymbol :: [LispVal] -> ThrowsError LispVal
+stringToSymbol [String x] = return $ Atom x
+stringToSymbol [badArg] = throwError $ TypeMismatch "string" badArg
+stringToSymbol badArgList = throwError $ NumArgs 1 badArgList
 
 ---- Type testing
 
