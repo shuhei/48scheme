@@ -270,7 +270,13 @@ primitives = [
   ("car", car),
   ("cdr", cdr),
   ("cons", cons),
-  ("symbol?", testSymbol),
+  ("boolean?", testType testBool),
+  ("float?", testType testFloat),
+  ("number?", testType testNumber),
+  ("string?", testType testString),
+  ("char?", testType testChar),
+  ("symbol?", testType testSymbol),
+  ("list?", testType testList),
   ("eq?", eqv),
   ("eqv?", eqv),
   ("equal?", equal)]
@@ -334,10 +340,38 @@ cons badArgList = throwError $ NumArgs 2 badArgList
 
 ---- Type testing
 
-testSymbol :: [LispVal] -> ThrowsError LispVal
-testSymbol [Atom _] = return $ Bool True
-testSymbol [_] = return $ Bool False
-testSymbol badArgList = throwError $ NumArgs 1 badArgList
+testType :: (LispVal -> LispVal) -> [LispVal] -> ThrowsError LispVal
+testType test [val] = return $ test val
+testType test badArgList = throwError $ NumArgs 1 badArgList
+
+testBool :: LispVal -> LispVal
+testBool (Bool _) = Bool True
+testBool _ = Bool False
+
+testNumber :: LispVal -> LispVal
+testNumber (Number _) = Bool True
+testNumber _ = Bool False
+
+testFloat :: LispVal -> LispVal
+testFloat (Float _) = Bool True
+testFloat _ = Bool False
+
+testString :: LispVal -> LispVal
+testString (String _) = Bool True
+testString _ = Bool False
+
+testChar :: LispVal -> LispVal
+testChar (Char _) = Bool True
+testChar _ = Bool False
+
+testSymbol :: LispVal -> LispVal
+testSymbol (Atom _) = Bool True
+testSymbol _ = Bool False
+
+testList :: LispVal -> LispVal
+testList (List _) = Bool True
+testList (DottedList _ _) = Bool True
+testList _ = Bool False
 
 ---- Equivalence & Equality
 
