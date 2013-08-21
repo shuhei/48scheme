@@ -270,6 +270,7 @@ primitives = [
   ("car", car),
   ("cdr", cdr),
   ("cons", cons),
+  ("symbol?", testSymbol),
   ("eq?", eqv),
   ("eqv?", eqv),
   ("equal?", equal)]
@@ -331,10 +332,21 @@ cons [x, DottedList xs xlast] = return $ DottedList (x : xs) xlast
 cons [x1, x2] = return $ DottedList [x1] x2
 cons badArgList = throwError $ NumArgs 2 badArgList
 
+---- Type testing
+
+testSymbol :: [LispVal] -> ThrowsError LispVal
+testSymbol [Atom _] = return $ Bool True
+testSymbol [_] = return $ Bool False
+testSymbol badArgList = throwError $ NumArgs 1 badArgList
+
+---- Equivalence & Equality
+
 eqv :: [LispVal] -> ThrowsError LispVal
 eqv [(Bool arg1), (Bool arg2)] = return $ Bool $ arg1 == arg2
 eqv [(Number arg1), (Number arg2)] = return $ Bool $ arg1 == arg2
+eqv [(Float arg1), (Float arg2)] = return $ Bool $ arg1 == arg2
 eqv [(String arg1), (String arg2)] = return $ Bool $ arg1 == arg2
+eqv [(Char arg1), (Char arg2)] = return $ Bool $ arg1 == arg2
 eqv [(Atom arg1), (Atom arg2)] = return $ Bool $ arg1 == arg2
 eqv [(DottedList xs x), (DottedList ys y)] = eqv [List $ xs ++ [x], List $ ys ++ [y]]
 eqv [(List arg1), (List arg2)] = return $ Bool $
