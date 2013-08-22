@@ -1,1 +1,1 @@
-ghc -package parsec -fglasgow-exts -o lisp lisp.hs
+ghc -package parsec -o lisp lisp.hs

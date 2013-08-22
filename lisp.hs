@@ -1,3 +1,5 @@
+{-# LANGUAGE ExistentialQuantification #-}
+
 import System.Environment
 import System.IO
 import Numeric
