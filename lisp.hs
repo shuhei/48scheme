@@ -272,6 +272,7 @@ primitives = [
   ("car", car),
   ("cdr", cdr),
   ("cons", cons),
+  ("make-string", makeString),
   ("symbol->string", symbolToString),
   ("string->symbol", stringToSymbol),
   ("boolean?", testType testBool),
@@ -353,6 +354,18 @@ stringToSymbol :: [LispVal] -> ThrowsError LispVal
 stringToSymbol [String x] = return $ Atom x
 stringToSymbol [badArg] = throwError $ TypeMismatch "string" badArg
 stringToSymbol badArgList = throwError $ NumArgs 1 badArgList
+
+---- String functions
+
+makeString :: [LispVal] -> ThrowsError LispVal
+makeString [Number n] = makeString [Number n, Char ' ']
+makeString [badArg] = throwError $ TypeMismatch "number" badArg
+makeString [Number n, Char c]
+  | n <= 0 = return $ String ""
+  | otherwise = return $ String $ replicate (fromIntegral n) c
+makeString [Number n, badArg] = throwError $ TypeMismatch "char" badArg
+makeString [badArg, _] = throwError $ TypeMismatch "number" badArg
+makeString badArgList = throwError $ NumArgs 2 badArgList
 
 ---- Type testing
 
