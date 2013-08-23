@@ -5,8 +5,9 @@ A small Scheme interpreter based on [Write Yourself a Scheme in 48 Hours](http:/
 ## Build & Play
 
 ```
-$ ./build.sh
-$ ./lisp
+$ cabal configure
+$ cabal build
+$ ./dist/build/48scheme/48scheme
 Lisp>>> (define (factorial n) (if (< n 2) 1 (* n (factorial (- n 1)))))
 (lambda ("n") ...)
 Lisp>>> (factorial 10)
