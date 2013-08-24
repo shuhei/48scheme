@@ -9,9 +9,9 @@ evalWithPrimitives expr = do
   evalString env expr
 
 shouldEval :: String -> String -> Spec
-shouldEval expr result = do
+shouldEval expr expected = do
   it expr $
-    evalWithPrimitives expr `shouldReturn` result
+    evalWithPrimitives expr `shouldReturn` expected
 
 spec :: Spec
 spec = do
@@ -29,3 +29,6 @@ spec = do
       "(+ 2 2)" `shouldEval` "4"
       "(+ 2 (- 4 1))" `shouldEval` "5"
       "(- (+ 4 6 3) 3 5 2)" `shouldEval` "3"
+
+    describe "error checking" $ do
+      "(+ 2 \"two\")" `shouldEval` "Invalid type: expected number, found \"two\""
