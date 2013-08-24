@@ -20,7 +20,12 @@ spec = do
       True `shouldBe` True
 
   describe "evalString" $ do
-    "(+ 1 2)" `shouldEval` "3"
-    "(- 5 3)" `shouldEval` "2"
-    "(* 3 4)" `shouldEval` "12"
-    "(/ 12 3)" `shouldEval` "4"
+    describe "arithmetic operations" $ do
+      "(+ 1 2)" `shouldEval` "3"
+      "(- 5 3)" `shouldEval` "2"
+      "(* 3 4)" `shouldEval` "12"
+      "(/ 12 3)" `shouldEval` "4"
+
+      "(+ 2 2)" `shouldEval` "4"
+      "(+ 2 (- 4 1))" `shouldEval` "5"
+      "(- (+ 4 6 3) 3 5 2)" `shouldEval` "3"
