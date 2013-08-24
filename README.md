@@ -5,6 +5,7 @@ A small Scheme interpreter based on [Write Yourself a Scheme in 48 Hours](http:/
 ## Build & Play
 
 ```
+$ cabal install --only-dependencies
 $ cabal configure
 $ cabal build
 $ ./dist/build/48scheme/48scheme
@@ -14,4 +15,13 @@ Lisp>>> (factorial 10)
 3628800
 Lisp>>> quit
 $
+```
+
+## Test
+
+```
+$ cabal install --only-dependenecies --enable-tests
+$ cabal configure --enable-tests
+$ cabal build
+$ cabal test
 ```
