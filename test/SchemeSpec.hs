@@ -34,3 +34,10 @@ spec = do
       "(+ 2 \"two\")" `shouldEval` "Invalid type: expected number, found \"two\""
       "(+ 2)" `shouldEval` "Expected 2 args; found values 2"
       "(what? 2)" `shouldEval` "Getting a unbound variable: what?"
+
+    describe "binary operators" $ do
+      "(< 2 3)" `shouldEval` "#t"
+      "(> 2 3)" `shouldEval` "#f"
+      "(<= 3 3)" `shouldEval` "#t"
+      "(string=? \"test\" \"test\")" `shouldEval` "#t"
+      "(string<? \"abc\" \"bba\")" `shouldEval` "#t"
