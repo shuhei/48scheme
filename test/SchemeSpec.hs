@@ -70,3 +70,22 @@ spec = do
         "(cons '(this is) 'test)"     `shouldEval` "((this is) . test)"
         "(cons '(this is) '())"       `shouldEval` "((this is))"
         "(cons 'a)"                   `shouldEval` "Expected 2 args; found values a"
+
+    describe "equivalence and equality" $ do
+      describe "eqv?" $ do
+        "(eqv? 1 3)"         `shouldEval` "#f"
+        "(eqv? 3 3)"         `shouldEval` "#t"
+        "(eqv? 'atom 'atom)" `shouldEval` "#t"
+        "(eqv? 3 \"3\")"     `shouldEval` "#f"
+
+      describe "eq?" $ do
+        "(eq? 1 3)"         `shouldEval` "#f"
+        "(eq? 3 3)"         `shouldEval` "#t"
+        "(eq? 'atom 'atom)" `shouldEval` "#t"
+        "(eq? 3 \"3\")"     `shouldEval` "#f"
+
+      describe "equal?" $ do
+        "(equal? 1 3)"         `shouldEval` "#f"
+        "(equal? 3 3)"         `shouldEval` "#t"
+        "(equal? 'atom 'atom)" `shouldEval` "#t"
+        "(equal? 3 \"3\")"     `shouldEval` "#t"
