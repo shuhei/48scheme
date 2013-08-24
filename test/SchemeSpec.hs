@@ -63,3 +63,10 @@ spec = do
         "(cdr '(a b . c))" `shouldEval` "(b . c)"
         "(cdr 'a)"         `shouldEval` "Invalid type: expected pair, found a"
         "(cdr 'a 'b)"      `shouldEval` "Expected 1 args; found values a b"
+
+      describe "cons" $ do
+        "(cons 'this '(is test))"     `shouldEval` "(this is test)"
+        "(cons 'this '(is a . test))" `shouldEval` "(this is a . test)"
+        "(cons '(this is) 'test)"     `shouldEval` "((this is) . test)"
+        "(cons '(this is) '())"       `shouldEval` "((this is))"
+        "(cons 'a)"                   `shouldEval` "Expected 2 args; found values a"
