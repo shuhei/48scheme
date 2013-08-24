@@ -32,3 +32,5 @@ spec = do
 
     describe "error checking" $ do
       "(+ 2 \"two\")" `shouldEval` "Invalid type: expected number, found \"two\""
+      "(+ 2)" `shouldEval` "Expected 2 args; found values 2"
+      "(what? 2)" `shouldEval` "Getting a unbound variable: what?"
