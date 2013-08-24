@@ -41,3 +41,7 @@ spec = do
       "(<= 3 3)" `shouldEval` "#t"
       "(string=? \"test\" \"test\")" `shouldEval` "#t"
       "(string<? \"abc\" \"bba\")" `shouldEval` "#t"
+
+    describe "if clause" $ do
+      "(if (> 2 3) \"no\" \"yes\")" `shouldEval` "\"yes\""
+      "(if (= 3 3) (+ 2 3 (- 5 1)) \"unequal\")" `shouldEval` "9"
