@@ -4,13 +4,21 @@ A small Scheme interpreter based on [Write Yourself a Scheme in 48 Hours](http:/
 
 [![Build Status](https://travis-ci.org/shuhei/48scheme.png)](https://travis-ci.org/shuhei/48scheme)
 
+## Installation
+
+Prerequisite:
+
+- [stack](https://github.com/commercialhaskell/stack)
+
+```
+$ stack setup
+```
+
 ## Build & Play
 
 ```
-$ cabal install --only-dependencies
-$ cabal configure
-$ cabal build
-$ ./dist/build/48scheme/48scheme
+$ stack build
+$ stack exec lisp
 Lisp>>> (define (factorial n) (if (< n 2) 1 (* n (factorial (- n 1)))))
 (lambda ("n") ...)
 Lisp>>> (factorial 10)
@@ -22,8 +30,5 @@ $
 ## Test
 
 ```
-$ cabal install --only-dependenecies --enable-tests
-$ cabal configure --enable-tests
-$ cabal build
-$ cabal test
+$ stack test
 ```
